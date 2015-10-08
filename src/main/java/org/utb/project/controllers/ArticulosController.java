@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.utb.project.dao.ArticuloDao;
+import org.utb.project.dao.CategoriaDao;
 import org.utb.project.entities.Articulo;
+import org.utb.project.entities.Categoria;
 
 /**
  *
@@ -24,6 +26,8 @@ import org.utb.project.entities.Articulo;
 public class ArticulosController {
     @Autowired
     ArticuloDao articuloDao;
+    @Autowired
+    CategoriaDao categoriaDao;
     
     @RequestMapping(value = "/articulos/listado", method = RequestMethod.GET)
     public String listado(){
@@ -32,13 +36,17 @@ public class ArticulosController {
     
     @RequestMapping(path = "/api/articulos", method = RequestMethod.POST)
     @ResponseBody
-    public void guardar(@ModelAttribute Articulo articulo) {
+    public void guardar(@ModelAttribute Articulo articulo, @ModelAttribute("categoria_id") Long categoriaId) {
+        Categoria categoria = categoriaDao.obtener(categoriaId);
+        articulo.setCategoria(categoria);
         articuloDao.agregar(articulo);
     }
     
     @RequestMapping(path = "/api/articulos/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public void editar(@PathVariable Long id, @ModelAttribute Articulo articulo) {
+    public void editar(@PathVariable Long id, @ModelAttribute Articulo articulo, @ModelAttribute("categoria_id") Long categoriaId) {
+        Categoria categoria = categoriaDao.obtener(categoriaId);
+        articulo.setCategoria(categoria);
         articulo.setId(id);
         articuloDao.editar(articulo);
     }

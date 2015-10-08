@@ -5,28 +5,31 @@
  */
 package org.utb.project.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author Juansa
  */
 @Entity
-public class Articulo implements Serializable {
+public class Categoria implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String codigo;
     private String nombre;
-    private Double valor;
     
-    @ManyToOne
-    private Categoria categoria;
+    @OneToMany(mappedBy = "categoria")
+    @JsonIgnore
+    private List<Articulo> articulos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -52,20 +55,12 @@ public class Articulo implements Serializable {
         this.nombre = nombre;
     }
 
-    public Double getValor() {
-        return valor;
+    public List<Articulo> getArticulos() {
+        return articulos;
     }
 
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setArticulos(List<Articulo> articulos) {
+        this.articulos = articulos;
     }
     
 }

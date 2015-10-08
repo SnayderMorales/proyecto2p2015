@@ -12,7 +12,7 @@ and open the template in the editor.
     </head>
     <body>
         <div>
-            <form id="form-articulo">
+            <form id="form-categoria">
                 <fieldset>
                     <legend>Datos del artículo</legend>
                     <div>
@@ -22,25 +22,17 @@ and open the template in the editor.
                         <label>Nombre: <input type="text" name="nombre"></label>
                     </div>
                     <div>
-                        <label>Categoría:
-                            <select name="categoria_id">
-                                <option></option>
-                            </select>
-                        </label>
-                    </div>
-                    <div>
                         <button type="submit">Guardar</button>
                     </div>
                 </fieldset>
             </form>
         </div>
         <div>
-            <table id="table-articulos">
+            <table id="table-categorias">
                 <thead>
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>
-                        <th>Categoría</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -51,50 +43,32 @@ and open the template in the editor.
         </div>
         <script src="/jquery-1.11.3.min.js"></script>
         <script type="text/javascript">
-            var idArticulo = 0;
+            var idCategoria = 0;
             
-            function llenarSelectCategoria() {
+            function llenarTabla() {
                 $.ajax({
                     url: '/api/categorias',
                     type: 'GET'
                 }).done(function(data) {
-                    var select = $('select[name="categoria_id"]');
-                    $.each(data, function(i, categoria) {
-                        var option = $('<option>');
-                        option.attr('value', categoria.id);
-                        option.text(categoria.nombre);
-                        select.append(option);
-                    });
-                });
-            }
-            
-            function llenarTabla() {
-                $.ajax({
-                    url: '/api/articulos',
-                    type: 'GET'
-                }).done(function(data) {
-                    var tbody = $('#table-articulos tbody');
+                    var tbody = $('#table-categorias tbody');
                     tbody.empty();
-                    $.each(data, function(i, articulo) {
+                    $.each(data, function(i, categoria) {
                         var tr = $('<tr>');
                         var td_codigo = $('<td>');
-                        td_codigo.html(articulo.codigo);
+                        td_codigo.html(categoria.codigo);
                         var td_nombre = $('<td>');
-                        td_nombre.html(articulo.nombre);
-                        var td_categoria = $('<td>');
-                        td_categoria.html(articulo.categoria ? articulo.categoria.nombre : '');
+                        td_nombre.html(categoria.nombre);
                         var td_acciones = $('<td>');
                         var a_editar = $('<a href="#">Editar</a>');
                         a_editar.on('click', function(event) {
                             event.preventDefault();
                             $.ajax({
-                                url: '/api/articulos/' + articulo.id,
+                                url: '/api/categorias/' + categoria.id,
                                 type: 'GET'
                             }).done(function(data) {
-                                idArticulo = data.id;
+                                idCategoria = data.id;
                                 $('input[name="codigo"]').val(data.codigo);
                                 $('input[name="nombre"]').val(data.nombre);
-                                $('select[name="categoria_id"]').val(data.categoria ? data.categoria.id : null);
                             });
                         });
                         td_acciones.append(a_editar);
@@ -104,7 +78,7 @@ and open the template in the editor.
                             event.preventDefault();
                             if(confirm("Esta seguro de que desea borrar este artículo?")) {
                                 $.ajax({
-                                    url: '/api/articulos/' + articulo.id,
+                                    url: '/api/categorias/' + categoria.id,
                                     type: 'DELETE'
                                 }).done(function() {
                                     llenarTabla();
@@ -114,7 +88,6 @@ and open the template in the editor.
                         td_acciones.append(a_eliminar);
                         tr.append(td_codigo);
                         tr.append(td_nombre);
-                        tr.append(td_categoria);
                         tr.append(td_acciones);
                         tbody.append(tr);
                     });
@@ -122,14 +95,13 @@ and open the template in the editor.
             }
             $(document).ready(function() {
                 llenarTabla();
-                llenarSelectCategoria();
             });
-            $('#form-articulo').on('submit', function(event) {
+            $('#form-categoria').on('submit', function(event) {
                 event.preventDefault();
                 var datos = $(this).serialize();
                 
-                var url = (idArticulo === 0) ? '/api/articulos' : '/api/articulos/' + idArticulo;
-                var type = (idArticulo === 0) ? 'POST' : 'PUT';
+                var url = (idCategoria === 0) ? '/api/categorias' : '/api/categorias/' + idCategoria;
+                var type = (idCategoria === 0) ? 'POST' : 'PUT';
                 
                 $.ajax({
                     url: url,
@@ -139,8 +111,7 @@ and open the template in the editor.
                     alert('El artículo fue guardado correctamente');
                     $('input[name="codigo"]').val("");
                     $('input[name="nombre"]').val("");
-                    $('select[name="categoria_id"]').val("");
-                    idArticulo = 0;
+                    idCategoria = 0;
                     llenarTabla();
                 }).fail(function() {
                     alert('No se pudo guardar');
