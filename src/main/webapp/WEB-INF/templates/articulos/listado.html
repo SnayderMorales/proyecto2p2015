@@ -22,6 +22,9 @@ and open the template in the editor.
                         <label>Nombre: <input type="text" name="nombre"></label>
                     </div>
                     <div>
+                        <label>Valor: <input type="text" name="valor"></label>
+                    </div>
+                    <div>
                         <label>Categoría:
                             <select name="categoria_id">
                                 <option></option>
@@ -41,6 +44,7 @@ and open the template in the editor.
                         <th>Código</th>
                         <th>Nombre</th>
                         <th>Categoría</th>
+                        <th>Valor</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -81,6 +85,8 @@ and open the template in the editor.
                         td_codigo.html(articulo.codigo);
                         var td_nombre = $('<td>');
                         td_nombre.html(articulo.nombre);
+                        var td_valor = $('<td>');
+                        td_valor.html(articulo.valor);
                         var td_categoria = $('<td>');
                         td_categoria.html(articulo.categoria ? articulo.categoria.nombre : '');
                         var td_acciones = $('<td>');
@@ -94,6 +100,7 @@ and open the template in the editor.
                                 idArticulo = data.id;
                                 $('input[name="codigo"]').val(data.codigo);
                                 $('input[name="nombre"]').val(data.nombre);
+                                $('input[name="valor"]').val(data.valor);
                                 $('select[name="categoria_id"]').val(data.categoria ? data.categoria.id : null);
                             });
                         });
@@ -114,6 +121,7 @@ and open the template in the editor.
                         td_acciones.append(a_eliminar);
                         tr.append(td_codigo);
                         tr.append(td_nombre);
+                        tr.append(td_valor);
                         tr.append(td_categoria);
                         tr.append(td_acciones);
                         tbody.append(tr);
@@ -139,6 +147,7 @@ and open the template in the editor.
                     alert('El artículo fue guardado correctamente');
                     $('input[name="codigo"]').val("");
                     $('input[name="nombre"]').val("");
+                    $('input[name="valor"]').val("");
                     $('select[name="categoria_id"]').val("");
                     idArticulo = 0;
                     llenarTabla();
